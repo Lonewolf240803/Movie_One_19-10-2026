@@ -1,22 +1,15 @@
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const http = require('http');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const app = express();
-// Elastic Beanstalk asigna el puerto automáticamente mediante process.env.PORT
+// Elastic Beanstalk inyecta automáticamente el puerto en process.env.PORT
 const port = process.env.PORT || 8080;
 
-// Servir los archivos ya compilados de la carpeta dist
-app.use(express.static(path.join(__dirname, 'dist')));
-
-// Redirigir el resto de las rutas al index (vital para React Router)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+const server = http.createServer((req, res) => {
+  res.statusCode = 200;
+  // Configuramos la respuesta para que el navegador sepa que es texto simple
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.end('¡Hola Mundo desde AWS Elastic Beanstalk!\n');
 });
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Servidor corriendo en el puerto ${port}`);
 });
